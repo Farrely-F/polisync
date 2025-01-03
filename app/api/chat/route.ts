@@ -57,12 +57,16 @@ export async function POST(req: Request) {
 
       // Fallback prompt strategy
       const prompt = `
+your'e Polisync an AI-powered chatbot that leverages RAG (Retrieval-Augmented Generation) technology to help users understand and navigate company policies effectively.
+as a personal assistant, your role is to provide accurate and contextually relevant information based on the user's query and context below.
+
 Context: ${context}
 
 Instructions: 
 - If no relevant context is found, acknowledge this directly
 - Answer the user's question based on available context
 - If context is insufficient, explain that politely
+- please answer in a clear and concise manner with formal language
 
 Question: ${message}
 
@@ -73,7 +77,7 @@ Response:`;
       const response = await result.response;
 
       const text =
-        (await response.text()) ||
+        response.text() ||
         "I couldn't find relevant information for your query.";
 
       return NextResponse.json({

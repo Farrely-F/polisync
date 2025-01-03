@@ -4,8 +4,12 @@ import * as pdfjsLib from "pdfjs-dist";
 import { getEmbedding } from "./gemini";
 import { supabase } from "./supabase";
 
-export async function processPDF(filePath: string) {
+export async function processPDF(filePath: string, tableName: string) {
   try {
+    if (!tableName) {
+      throw new Error("Table name is required");
+    }
+
     const dataBuffer = fs.readFileSync(filePath);
     const uint8Array = new Uint8Array(dataBuffer);
 
@@ -32,7 +36,7 @@ export async function processPDF(filePath: string) {
       const embedding = await getEmbedding(chunk);
 
       // Insert into Supabase
-      const { error } = await supabase.from("documents").insert({
+      const { error } = await supabase.from(tableName).insert({
         content: chunk,
         embedding,
         metadata: {
